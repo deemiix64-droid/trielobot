@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Топ-10 игроков по ЭЛО</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #0a0c12 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* контейнер */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 40px;
+            background: rgba(20, 24, 36, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .title h1 {
+            font-size: 32px;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .title p {
+            color: #8b92b0;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .admin-open-btn {
+            background: linear-gradient(135deg, #4c1d95, #6d28d9);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .admin-open-btn:hover {
+            transform: scale(0.97);
+            background: linear-gradient(135deg, #5b21b6, #7c3aed);
+        }
+
+        /* таблица топа */
+        .leaderboard {
+            background: rgba(15, 18, 28, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 18px 22px;
+            color: #a5b4fc;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #2d3348;
+            background: rgba(0,0,0,0.2);
+        }
+
+        td {
+            padding: 16px 22px;
+            border-bottom: 1px solid #252b3d;
+            color: #eef2ff;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-cell {
+            font-weight: 800;
+            font-size: 20px;
+            width: 85px;
+            color: #fbbf24;
+        }
+
+        .name-cell {
+            font-weight: 600;
+            font-size: 17px;
+        }
+
+        .elo-cell span {
+            background: #0b0f1a;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-family: 'Monaco', monospace;
+            font-weight: 800;
+            font-size: 15px;
+            color: #c4b5fd;
+            display: inline-block;
+        }
+
+        .empty-row td {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .footer-info {
+            padding: 14px 22px;
+            border-top: 1px solid #252b3d;
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        /* модальное окно админ-панели */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .admin-modal {
+            background: linear-gradient(135deg, #11131f, #0c0e18);
+            border-radius: 32px;
+            width: 90%;
+            max-width: 450px;
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.active .admin-modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: rgba(79, 70, 229, 0.15);
+            border-bottom: 1px solid #2d3348;
+        }
+
+        .modal-header h2 {
+            color: #fbbf24;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 28px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .close-modal:hover {
+            background: #2d3348;
+            color: white;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a5b4fc;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #03050c;
+            border: 1px solid #2d3348;
+            border-radius: 16px;
+            padding: 12px 16px;
+            font-size: 16px;
+            color: white;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+
+        .modal-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .modal-btn:hover {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .modal-btn-secondary {
+            background: #1f2937;
+        }
+
+        .modal-btn-danger {
+            background: #991b1b;
+        }
+
+        .modal-buttons-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .admin-note {
+            font-size: 11px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #2d3348;
+        }
+
+        .login-section {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .password-input {
+            margin: 15px 0;
+        }
+
+        .login-btn {
+            background: #4f46e5;
+            width: 100%;
+            padding: 12px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #1f2937;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+
+        /* анимации */
+        @media (max-width: 680px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            th, td {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Шапка с кнопкой открыть админку -->
+    <div class="header">
+        <div class="title">
+            <h1>🏆 ЭЛО АРЕНА</h1>
+            <p>Топ-10 лучших игроков | Рейтинг в реальном времени</p>
+        </div>
+        <button class="admin-open-btn" id="openAdminBtn">
+            🔐 Админ-панель
+        </button>
+    </div>
+
+    <!-- Таблица топа -->
+    <div class="leaderboard">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th># МЕСТО</th>
+                        <th>НИКНЕЙМ</th>
+                        <th>ЭЛО РЕЙТИНГ</th>
+                    </tr>
+                </thead>
+                <tbody id="topTableBody">
+                    <tr class="empty-row">
+                        <td colspan="3">🏁 Загрузка списка игроков... или топ пока пуст</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footer-info">
+            📊 Рейтинг обновляется автоматически. Топ-10 по убыванию ЭЛО.
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно админ-панели -->
+<div class="modal-overlay" id="adminModal">
+    <div class="admin-modal">
+        <div class="modal-header">
+            <h2>⚙️ Админ-панель</h2>
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Содержимое меняется в зависимости от авторизации -->
+            <div id="authContent">
+                <!-- форма входа -->
+                <div class="login-section">
+                    <div style="font-size: 14px; color: #a5b4fc; margin-bottom: 15px;">🔒 Введите пароль для доступа</div>
+                    <input type="password" id="adminPassword" placeholder="Пароль" class="password-input" style="width: 100%; padding: 12px; border-radius: 40px; background: #03050c; border: 1px solid #2d3348; color: white; margin-bottom: 15px;">
+                    <button class="login-btn" id="loginAdminBtn">Войти</button>
+                    <div class="status-badge">Только для администратора</div>
+                </div>
+            </div>
+            <div id="adminContent" style="display: none;">
+                <!-- форма управления после входа -->
+                <div class="input-group">
+                    <label>👤 Никнейм игрока</label>
+                    <input type="text" id="playerName" placeholder="Введите ник" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>⚡ Рейтинг ЭЛО</label>
+                    <input type="number" id="playerElo" placeholder="0-5000" value="1200">
+                </div>
+                <button class="modal-btn" id="addPlayerModalBtn">➕ Добавить / Обновить игрока</button>
+                <div class="modal-buttons-row">
+                    <button class="modal-btn modal-btn-secondary" id="demoPlayersBtn">✨ Демо-игроки</button>
+                    <button class="modal-btn modal-btn-danger" id="clearAllBtn">🗑️ Очистить топ</button>
+                </div>
+                <div class="admin-note">
+                    • При совпадении ника — обновляется ЭЛО<br>
+                    • Все данные сохраняются в браузере<br>
+                    • Топ сортируется автоматически
+                </div>
+                <button class="modal-btn modal-btn-secondary" id="logoutAdminBtn" style="margin-top: 15px; background: #374151;">🚪 Выйти из админ-панели</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== НАСТРОЙКИ ====================
+    const ADMIN_PASSWORD = "orbtgg";     // пароль админа
+    
+    // данные игроков
+    let players = [];
+    let isAdminLoggedIn = false;
+    
+    // DOM элементы
+    let topTableBody;
+    let adminModal, openAdminBtn, closeModalBtn;
+    let authContentDiv, adminContentDiv;
+    let loginBtn, passwordInput;
+    let addBtn, playerNameInput, playerEloInput, demoBtn, clearBtn, logoutBtn;
+    
+    // ==================== РАБОТА С ЛОКАЛЬНЫМ ХРАНИЛИЩЕМ ====================
+    function savePlayersToStorage() {
+        localStorage.setItem('elo_top_players_data', JSON.stringify(players));
+    }
+    
+    function loadPlayersFromStorage() {
+        const saved = localStorage.getItem('elo_top_players_data');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    players = parsed;
+                } else {
+                    players = [];
+                }
+            } catch(e) {
+                players = [];
+            }
+        } else {
+            players = [];
+        }
+        sortPlayers();
+    }
+    
+    function sortPlayers() {
+        players.sort((a, b) => {
+            if (a.elo !== b.elo) return b.elo - a.elo;
+            return a.id - b.id;
+        });
+    }
+    
+    function generateId() {
+        return Date.now() + Math.random() * 100000;
+    }
+    
+    // Добавление/обновление
+    function addOrUpdatePlayer(name, eloValue) {
+        if (!isAdminLoggedIn) {
+            alert("Доступ запрещён! Войдите в админ-панель.");
+            return false;
+        }
+        
+        const trimmedName = name.trim();
+        if (!trimmedName) {
+            alert("Введите никнейм игрока!");
+            return false;
+        }
+        
+        let eloNum = Number(eloValue);
+        if (isNaN(eloNum)) {
+            alert("ЭЛО должно быть числом!");
+            return false;
+        }
+        eloNum = Math.min(5000, Math.max(0, eloNum));
+        
+        const existingIndex = players.findIndex(p => p.name.toLowerCase() === trimmedName.toLowerCase());
+        
+        if (existingIndex !== -1) {
+            players[existingIndex].elo = eloNum;
+            players[existingIndex].name = trimmedName;
+        } else {
+            players.push({
+                id: generateId(),
+                name: trimmedName,
+                elo: eloNum
+            });
+        }
+        
+        sortPlayers();
+        savePlayersToStorage();
+        renderTopTable();
+        return true;
+    }
+    
+    function deletePlayerById(id) {
+        if (!isAdminLoggedIn) {
+            alert("Удаление доступно только администратору!");
+            return;
+        }
+        players = players.filter(p => p.id !== id);
+        sortPlayers();
+        savePlayersToStorage();
+        renderTopTable();
+    }
+    
+    function clearAllPlayers() {
+        if (!isAdminLoggedIn) {
+            alert("Очистка топа доступна только администратору!");
+            return;
+        }
+        if (confirm("⚠️ ВНИМАНИЕ! Удалить всех игроков из рейтинга?")) {
+            players = [];
+            savePlayersToStorage();
+            renderTopTable();
+        }
+    }
+    
+    function addDemoPlayers() {
+        if (!isAdminLoggedIn) {
+            alert("Добавление демо-игроков доступно только администратору!");
+            return;
+        }
+        
+        const demoList = [
+            { name: "SlayerX", elo: 2450 },
+            { name: "VoidMaster", elo: 2380 },
+            { name: "Crimson", elo: 2210 },
+            { name: "NeoReaper", elo: 1975 },
+            { name: "Stinger", elo: 1840 },
+            { name: "Fenrir", elo: 1720 },
+            { name: "LuckyShot", elo: 2100 },
+            { name: "ShadowBlade", elo: 2530 },
+            { name: "Phantom", elo: 1890 },
+            { name: "GhostRider", elo: 2010 }
+        ];
+        
+        for (const demo of demoList) {
+            const existing = players.find(p => p.name.toLowerCase() === demo.name.toLowerCase());
+            if (existing) {
+                existing.elo = demo.elo;
+            } else {
+                players.push({
+                    id: generateId(),
+                    name: demo.name,
+                    elo: demo.elo
+                });
+            }
+        }
+        
+        sortPlayers();
+        savePlayersToStorage();
+        renderTopTable();
+        alert("✅ Демо-игроки добавлены! Топ обновлён.");
+    }
+    
+    // ==================== ОТРИСОВКА ТАБЛИЦЫ ====================
+    function renderTopTable() {
+        if (!topTableBody) return;
+        
+        const top10 = players.slice(0, 10);
+        
+        if (top10.length === 0) {
+            topTableBody.innerHTML = '<tr class="empty-row"><td colspan="3">🏁 Топ пуст. Откройте админ-панель и добавьте игроков</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        for (let i = 0; i < top10.length; i++) {
+            const player = top10[i];
+            const rank = i + 1;
+            let medal = '';
+            if (rank === 1) medal = '🥇 ';
+            else if (rank === 2) medal = '🥈 ';
+            else if (rank === 3) medal = '🥉 ';
+            
+            html += `
+                <tr>
+                    <td class="rank-cell">${medal}${rank}</td>
+                    <td class="name-cell">${escapeHtml(player.name)}</td>
+                    <td class="elo-cell"><span>${player.elo} ⚡</span></td>
+                </tr>
+            `;
+        }
+        topTableBody.innerHTML = html;
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // ==================== АДМИН-ЛОГИН / ВЫХОД ====================
+    function showAdminLoginForm() {
+        authContentDiv.style.display = 'block';
+        adminContentDiv.style.display = 'none';
+        if (passwordInput) passwordInput.value = '';
+    }
+    
+    function showAdminControls() {
+        authContentDiv.style.display = 'none';
+        adminContentDiv.style.display = 'block';
+    }
+    
+    function loginAdmin() {
+        const enteredPassword = passwordInput.value;
+        if (enteredPassword === ADMIN_PASSWORD) {
+            isAdminLoggedIn = true;
+            showAdminControls();
+            alert("✅ Добро пожаловать! Теперь вы можете управлять топом игроков.");
+        } else {
+            alert("❌ Неверный пароль! Доступ запрещён.");
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    }
+    
+    function logoutAdmin() {
+        if (confirm("Выйти из админ-панели? Редактирование станет недоступным.")) {
+            isAdminLoggedIn = false;
+            showAdminLoginForm();
+            // очищаем поля ввода в админке
+            if (playerNameInput) playerNameInput.value = '';
+            if (playerEloInput) playerEloInput.value = '1200';
+        }
+    }
+    
+    // ==================== ОБРАБОТЧИКИ МОДАЛЬНОГО ОКНА ====================
+    function openModal() {
+        adminModal.classList.add('active');
+        // если не залогинен - показываем форму входа
+        if (!isAdminLoggedIn) {
+            showAdminLoginForm();
+        } else {
+            showAdminControls();
+        }
+    }
+    
+    function closeModal() {
+        adminModal.classList.remove('active');
+    }
+    
+    // ==================== ОБРАБОТЧИК ДОБАВЛЕНИЯ ====================
+    function handleAddFromModal() {
+        if (!isAdminLoggedIn) {
+            alert("Сначала войдите в админ-панель!");
+            return;
+        }
+        const name = playerNameInput.value;
+        const eloVal = playerEloInput.value;
+        if (addOrUpdatePlayer(name, eloVal)) {
+            playerNameInput.value = '';
+            playerEloInput.value = '1200';
+            playerNameInput.focus();
+        }
+    }
+    
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+    function init() {
+        // получаем элементы
+        topTableBody = document.getElementById('topTableBody');
+        adminModal = document.getElementById('adminModal');
+        openAdminBtn = document.getElementById('openAdminBtn');
+        closeModalBtn = document.getElementById('closeModalBtn');
+        
+        authContentDiv = document.getElementById('authContent');
+        adminContentDiv = document.getElementById('adminContent');
+        loginBtn = document.getElementById('loginAdminBtn');
+        passwordInput = document.getElementById('adminPassword');
+        
+        addBtn = document.getElementById('addPlayerModalBtn');
+        playerNameInput = document.getElementById('playerName');
+        playerEloInput = document.getElementById('playerElo');
+        demoBtn = document.getElementById('demoPlayersBtn');
+        clearBtn = document.getElementById('clearAllBtn');
+        logoutBtn = document.getElementById('logoutAdminBtn');
+        
+        // загружаем игроков
+        loadPlayersFromStorage();
+        renderTopTable();
+        
+        // состояние админа по умолчанию
+        isAdminLoggedIn = false;
+        showAdminLoginForm();
+        
+        // обработчики модалки
+        openAdminBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) closeModal();
+        });
+        
+        // вход/выход
+        loginBtn.addEventListener('click', loginAdmin);
+        logoutBtn.addEventListener('click', logoutAdmin);
+        
+        // управление игроками
+        addBtn.addEventListener('click', handleAddFromModal);
+        demoBtn.addEventListener('click', addDemoPlayers);
+        clearBtn.addEventListener('click', clearAllPlayers);
+        
+        // Enter в полях админки
+        const handleEnter = (e) => {
+            if (e.key === 'Enter' && isAdminLoggedIn && adminModal.classList.contains('active')) {
+                e.preventDefault();
+                handleAddFromModal();
+            }
+        };
+        if (playerNameInput) playerNameInput.addEventListener('keypress', handleEnter);
+        if (playerEloInput) playerEloInput.addEventListener('keypress', handleEnter);
+        
+        // Enter на поле пароля
+        if (passwordInput) {
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') loginAdmin();
+            });
+        }
+        
+        // небольшая автоподгрузка при изменении вкладки (для синхронизации)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'elo_top_players_data') {
+                loadPlayersFromStorage();
+                renderTopTable();
+            }
+        });
+    }
+    
+    // запуск
+    init();
+</script>
+</body>
+</html>
