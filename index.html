@@ -23,7 +23,6 @@
             margin: 0 auto;
         }
 
-        /* шапка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -73,7 +72,6 @@
             background: linear-gradient(135deg, #5b21b6, #7c3aed);
         }
 
-        /* таблица топа */
         .leaderboard {
             background: rgba(15, 18, 28, 0.85);
             backdrop-filter: blur(10px);
@@ -130,7 +128,7 @@
             background: #0b0f1a;
             padding: 6px 16px;
             border-radius: 40px;
-            font-family: 'Monaco', monospace;
+            font-family: monospace;
             font-weight: 800;
             font-size: 15px;
             color: #c4b5fd;
@@ -180,7 +178,6 @@
             text-align: center;
         }
 
-        /* модальное окно админ-панели */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -366,7 +363,6 @@
             margin-top: 12px;
         }
 
-        /* Кастомные уведомления (всплывающие тосты) */
         .toast-notification {
             position: fixed;
             bottom: 30px;
@@ -389,79 +385,29 @@
             gap: 12px;
         }
 
-        .toast-notification.success {
-            border-left-color: #10b981;
-            background: #0f172a;
-        }
+        .toast-notification.success { border-left-color: #10b981; background: #0f172a; }
+        .toast-notification.error { border-left-color: #ef4444; background: #1f1a2a; }
+        .toast-notification.warning { border-left-color: #f59e0b; background: #1f1a2a; }
+        .toast-notification.info { border-left-color: #3b82f6; background: #0f172a; }
 
-        .toast-notification.error {
-            border-left-color: #ef4444;
-            background: #1f1a2a;
-        }
-
-        .toast-notification.warning {
-            border-left-color: #f59e0b;
-            background: #1f1a2a;
-        }
-
-        .toast-notification.info {
-            border-left-color: #3b82f6;
-            background: #0f172a;
-        }
-
-        .toast-icon {
-            font-size: 20px;
-        }
-
-        .toast-message {
-            flex: 1;
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 0 4px;
-        }
-
-        .toast-close:hover {
-            color: white;
-        }
+        .toast-icon { font-size: 20px; }
+        .toast-message { flex: 1; }
+        .toast-close { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 18px; padding: 0 4px; }
+        .toast-close:hover { color: white; }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
+            to { opacity: 0; transform: translateX(100%); }
         }
 
         @media (max-width: 680px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            th, td {
-                padding: 12px 15px;
-            }
-            .toast-notification {
-                bottom: 20px;
-                right: 20px;
-                left: 20px;
-                max-width: none;
-            }
+            .header { flex-direction: column; text-align: center; }
+            th, td { padding: 12px 15px; }
+            .toast-notification { bottom: 20px; right: 20px; left: 20px; max-width: none; }
         }
     </style>
 </head>
@@ -470,38 +416,26 @@
     <div class="header">
         <div class="title">
             <h1>🏆 ЭЛО АРЕНА</h1>
-            <p>Топ-10 лучших игроков</p>
+            <p>Топ-10 лучших игроков | Без ограничений рейтинга</p>
         </div>
-        <button class="admin-open-btn" id="openAdminBtn">
-            🔐 Админ-панель
-        </button>
+        <button class="admin-open-btn" id="openAdminBtn">🔐 Админ-панель</button>
     </div>
 
     <div class="leaderboard">
         <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr>
-                        <th># МЕСТО</th>
-                        <th>НИКНЕЙМ</th>
-                        <th>ЭЛО РЕЙТИНГ</th>
-                        <th></th>
-                    </tr>
+                    <tr><th># МЕСТО</th><th>НИКНЕЙМ</th><th>ЭЛО РЕЙТИНГ</th><th></th></tr>
                 </thead>
                 <tbody id="topTableBody">
-                    <tr class="empty-row">
-                        <td colspan="4">🏁 Загрузка списка игроков... или топ пока пуст</td>
-                    </tr>
+                    <tr class="empty-row"><td colspan="4">🏁 Топ пуст. Откройте админ-панель и добавьте игроков</td></tr>
                 </tbody>
             </table>
         </div>
-        <div class="footer-info">
-            📊 Топ-10 по убыванию ЭЛО.
-        </div>
+        <div class="footer-info">📊 Рейтинг обновляется автоматически. Топ-10 по убыванию ЭЛО. Без ограничений!</div>
     </div>
 </div>
 
-<!-- Модальное окно админ-панели -->
 <div class="modal-overlay" id="adminModal">
     <div class="admin-modal">
         <div class="modal-header">
@@ -523,8 +457,8 @@
                     <input type="text" id="playerName" placeholder="Введите ник" autocomplete="off">
                 </div>
                 <div class="input-group">
-                    <label>⚡ Рейтинг ЭЛО</label>
-                    <input type="number" id="playerElo" placeholder="0-5000" value="1200">
+                    <label>⚡ Рейтинг ЭЛО (без ограничений)</label>
+                    <input type="number" id="playerElo" placeholder="Любое число" value="1000">
                 </div>
                 <button class="modal-btn" id="addPlayerModalBtn">➕ Добавить / Обновить игрока</button>
                 <div class="modal-buttons-row">
@@ -533,8 +467,8 @@
                 </div>
                 <div class="admin-note">
                     • При совпадении ника — обновляется ЭЛО<br>
-                    • Все данные сохраняются в браузере<br>
-                    • Топ сортируется автоматически
+                    • Нет ограничений на значение ЭЛО<br>
+                    • Все данные сохраняются в браузере
                 </div>
                 <button class="modal-btn modal-btn-secondary" id="logoutAdminBtn" style="margin-top: 15px; background: #374151;">🚪 Выйти из админ-панели</button>
             </div>
@@ -543,436 +477,182 @@
 </div>
 
 <script>
-    // ==================== НАСТРОЙКИ ====================
     const ADMIN_PASSWORD = "orbtgg";
-    
     let players = [];
     let isAdminLoggedIn = false;
-    
-    // DOM элементы
-    let topTableBody;
-    let adminModal, openAdminBtn, closeModalBtn;
-    let authContentDiv, adminContentDiv;
-    let loginBtn, passwordInput;
-    let addBtn, playerNameInput, playerEloInput, demoBtn, clearBtn, logoutBtn;
-    
-    // ==================== КАСТОМНЫЕ УВЕДОМЛЕНИЯ ====================
+
     function showToast(message, type = 'info') {
-        const icons = {
-            success: '✅',
-            error: '❌',
-            warning: '⚠️',
-            info: 'ℹ️'
-        };
-        
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
         const toast = document.createElement('div');
         toast.className = `toast-notification ${type}`;
-        toast.innerHTML = `
-            <div class="toast-icon">${icons[type] || 'ℹ️'}</div>
-            <div class="toast-message">${escapeHtml(message)}</div>
-            <button class="toast-close">✖</button>
-        `;
-        
+        toast.innerHTML = `<div class="toast-icon">${icons[type] || 'ℹ️'}</div><div class="toast-message">${escapeHtml(message)}</div><button class="toast-close">✖</button>`;
         document.body.appendChild(toast);
-        
         const closeBtn = toast.querySelector('.toast-close');
-        const closeToast = () => {
-            toast.style.animation = 'fadeOut 0.3s ease';
-            setTimeout(() => toast.remove(), 300);
-        };
-        
+        const closeToast = () => { toast.style.animation = 'fadeOut 0.3s ease'; setTimeout(() => toast.remove(), 300); };
         closeBtn.addEventListener('click', closeToast);
-        
-        setTimeout(() => {
-            if (toast.parentNode) closeToast();
-        }, 4000);
+        setTimeout(() => { if (toast.parentNode) closeToast(); }, 4000);
     }
-    
-    // ==================== КАСТОМНЫЙ CONFIRM ====================
-    function customConfirm(message, onConfirm, onCancel) {
+
+    function customConfirm(message, onConfirm) {
         const overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        `;
-        
+        overlay.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:2000;`;
         const modal = document.createElement('div');
-        modal.style.cssText = `
-            background: #1a1f2e;
-            border-radius: 24px;
-            padding: 24px;
-            max-width: 380px;
-            width: 90%;
-            border: 1px solid #4f46e5;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        `;
-        
-        modal.innerHTML = `
-            <div style="font-size: 18px; margin-bottom: 16px; color: #fbbf24;">⚠️ Подтверждение</div>
-            <div style="color: #e2e8f0; margin-bottom: 24px;">${escapeHtml(message)}</div>
-            <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                <button id="confirmYes" style="background: #4f46e5; border: none; padding: 8px 24px; border-radius: 40px; color: white; cursor: pointer;">Да</button>
-                <button id="confirmNo" style="background: #2d3748; border: none; padding: 8px 24px; border-radius: 40px; color: #e2e8f0; cursor: pointer;">Отмена</button>
-            </div>
-        `;
-        
+        modal.style.cssText = `background:#1a1f2e;border-radius:24px;padding:24px;max-width:380px;width:90%;border:1px solid #4f46e5;box-shadow:0 20px 40px rgba(0,0,0,0.4);`;
+        modal.innerHTML = `<div style="font-size:18px;margin-bottom:16px;color:#fbbf24;">⚠️ Подтверждение</div><div style="color:#e2e8f0;margin-bottom:24px;">${escapeHtml(message)}</div><div style="display:flex;gap:12px;justify-content:flex-end;"><button id="confirmYes" style="background:#4f46e5;border:none;padding:8px 24px;border-radius:40px;color:white;cursor:pointer;">Да</button><button id="confirmNo" style="background:#2d3748;border:none;padding:8px 24px;border-radius:40px;color:#e2e8f0;cursor:pointer;">Отмена</button></div>`;
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
-        
         const yesBtn = modal.querySelector('#confirmYes');
         const noBtn = modal.querySelector('#confirmNo');
-        
         const close = () => overlay.remove();
-        
-        yesBtn.addEventListener('click', () => {
-            close();
-            if (onConfirm) onConfirm();
-        });
-        
-        noBtn.addEventListener('click', () => {
-            close();
-            if (onCancel) onCancel();
-        });
+        yesBtn.addEventListener('click', () => { close(); if (onConfirm) onConfirm(); });
+        noBtn.addEventListener('click', close);
     }
-    
-    // ==================== РАБОТА С ДАННЫМИ ====================
-    function savePlayersToStorage() {
-        localStorage.setItem('elo_top_players_data', JSON.stringify(players));
+
+    function savePlayers() { localStorage.setItem('elo_top_players', JSON.stringify(players)); }
+    function loadPlayers() {
+        const saved = localStorage.getItem('elo_top_players');
+        if (saved) { try { const parsed = JSON.parse(saved); if (Array.isArray(parsed)) players = parsed; } catch(e) {} }
+        if (!players) players = [];
+        players.sort((a, b) => { if (a.elo !== b.elo) return b.elo - a.elo; return a.id - b.id; });
     }
-    
-    function loadPlayersFromStorage() {
-        const saved = localStorage.getItem('elo_top_players_data');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed)) {
-                    players = parsed;
-                } else {
-                    players = [];
-                }
-            } catch(e) {
-                players = [];
-            }
-        } else {
-            players = [];
-        }
-        sortPlayers();
-    }
-    
-    function sortPlayers() {
-        players.sort((a, b) => {
-            if (a.elo !== b.elo) return b.elo - a.elo;
-            return a.id - b.id;
-        });
-    }
-    
-    function generateId() {
-        return Date.now() + Math.random() * 100000;
-    }
-    
+    function generateId() { return Date.now() + Math.random() * 100000; }
+
     function addOrUpdatePlayer(name, eloValue) {
-        if (!isAdminLoggedIn) {
-            showToast("Доступ запрещён! Войдите в админ-панель.", "error");
-            return false;
-        }
-        
+        if (!isAdminLoggedIn) { showToast("Доступ запрещён! Войдите в админ-панель.", "error"); return false; }
         const trimmedName = name.trim();
-        if (!trimmedName) {
-            showToast("Введите никнейм игрока!", "warning");
-            return false;
-        }
-        
+        if (!trimmedName) { showToast("Введите никнейм игрока!", "warning"); return false; }
         let eloNum = Number(eloValue);
-        if (isNaN(eloNum)) {
-            showToast("ЭЛО должно быть числом!", "warning");
-            return false;
-        }
-        eloNum = Math.min(5000, Math.max(0, eloNum));
-        
+        if (isNaN(eloNum)) { showToast("ЭЛО должно быть числом!", "warning"); return false; }
         const existingIndex = players.findIndex(p => p.name.toLowerCase() === trimmedName.toLowerCase());
-        
         if (existingIndex !== -1) {
             players[existingIndex].elo = eloNum;
             players[existingIndex].name = trimmedName;
-            showToast(`Игрок "${trimmedName}" обновлён! Новый ЭЛО: ${eloNum}`, "success");
+            showToast(`Игрок "${trimmedName}" обновлён! ЭЛО: ${eloNum}`, "success");
         } else {
-            players.push({
-                id: generateId(),
-                name: trimmedName,
-                elo: eloNum
-            });
+            players.push({ id: generateId(), name: trimmedName, elo: eloNum });
             showToast(`Игрок "${trimmedName}" добавлен с ЭЛО: ${eloNum}`, "success");
         }
-        
-        sortPlayers();
-        savePlayersToStorage();
-        renderTopTable();
+        players.sort((a, b) => { if (a.elo !== b.elo) return b.elo - a.elo; return a.id - b.id; });
+        savePlayers();
+        renderTable();
         return true;
     }
-    
-    function deletePlayerById(id, playerName) {
-        if (!isAdminLoggedIn) {
-            showToast("Удаление доступно только администратору!", "error");
-            return;
-        }
-        
-        customConfirm(`Удалить игрока "${playerName}" из топа?`, () => {
+
+    function deletePlayer(id, name) {
+        if (!isAdminLoggedIn) { showToast("Удаление доступно только администратору!", "error"); return; }
+        customConfirm(`Удалить игрока "${name}" из топа?`, () => {
             players = players.filter(p => p.id !== id);
-            sortPlayers();
-            savePlayersToStorage();
-            renderTopTable();
-            showToast(`Игрок "${playerName}" удалён из рейтинга`, "success");
+            players.sort((a, b) => { if (a.elo !== b.elo) return b.elo - a.elo; return a.id - b.id; });
+            savePlayers();
+            renderTable();
+            showToast(`Игрок "${name}" удалён`, "success");
         });
     }
-    
-    function clearAllPlayers() {
-        if (!isAdminLoggedIn) {
-            showToast("Очистка топа доступна только администратору!", "error");
-            return;
-        }
-        
-        customConfirm("⚠️ ВНИМАНИЕ! Удалить всех игроков из рейтинга?", () => {
+
+    function clearAll() {
+        if (!isAdminLoggedIn) { showToast("Очистка топа доступна только администратору!", "error"); return; }
+        customConfirm("⚠️ Удалить всех игроков из рейтинга?", () => {
             players = [];
-            savePlayersToStorage();
-            renderTopTable();
+            savePlayers();
+            renderTable();
             showToast("Весь топ очищен", "info");
         });
     }
-    
-    function addDemoPlayers() {
-        if (!isAdminLoggedIn) {
-            showToast("Добавление демо-игроков доступно только администратору!", "error");
-            return;
-        }
-        
+
+    function addDemo() {
+        if (!isAdminLoggedIn) { showToast("Добавление демо-игроков доступно только администратору!", "error"); return; }
         const demoList = [
-            { name: "SlayerX", elo: 2450 },
-            { name: "VoidMaster", elo: 2380 },
-            { name: "Crimson", elo: 2210 },
-            { name: "NeoReaper", elo: 1975 },
-            { name: "Stinger", elo: 1840 },
-            { name: "Fenrir", elo: 1720 },
-            { name: "LuckyShot", elo: 2100 },
-            { name: "ShadowBlade", elo: 2530 },
-            { name: "Phantom", elo: 1890 },
-            { name: "GhostRider", elo: 2010 }
+            { name: "SlayerX", elo: 2450 }, { name: "VoidMaster", elo: 2380 }, { name: "Crimson", elo: 2210 },
+            { name: "NeoReaper", elo: 1975 }, { name: "Stinger", elo: 1840 }, { name: "Fenrir", elo: 1720 },
+            { name: "LuckyShot", elo: 2100 }, { name: "ShadowBlade", elo: 2530 }, { name: "Phantom", elo: 1890 }
         ];
-        
-        let addedCount = 0;
+        let added = 0;
         for (const demo of demoList) {
             const existing = players.find(p => p.name.toLowerCase() === demo.name.toLowerCase());
-            if (!existing) {
-                players.push({
-                    id: generateId(),
-                    name: demo.name,
-                    elo: demo.elo
-                });
-                addedCount++;
-            }
+            if (!existing) { players.push({ id: generateId(), name: demo.name, elo: demo.elo }); added++; }
         }
-        
-        sortPlayers();
-        savePlayersToStorage();
-        renderTopTable();
-        showToast(`Добавлено ${addedCount} демо-игроков`, "success");
+        players.sort((a, b) => { if (a.elo !== b.elo) return b.elo - a.elo; return a.id - b.id; });
+        savePlayers();
+        renderTable();
+        showToast(`Добавлено ${added} демо-игроков`, "success");
     }
-    
-    // ==================== ОТРИСОВКА ТАБЛИЦЫ С КНОПКАМИ УДАЛЕНИЯ ====================
-    function renderTopTable() {
-        if (!topTableBody) return;
-        
+
+    function renderTable() {
+        const tbody = document.getElementById('topTableBody');
+        if (!tbody) return;
         const top10 = players.slice(0, 10);
-        
         if (top10.length === 0) {
-            topTableBody.innerHTML = '<tr class="empty-row"><td colspan="4">🏁 Топ пуст. Откройте админ-панель и добавьте игроков</td></tr>';
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="4">🏁 Топ пуст. Откройте админ-панель и добавьте игроков</td></tr>';
             return;
         }
-        
         let html = '';
         for (let i = 0; i < top10.length; i++) {
-            const player = top10[i];
+            const p = top10[i];
             const rank = i + 1;
-            let medal = '';
-            if (rank === 1) medal = '🥇 ';
-            else if (rank === 2) medal = '🥈 ';
-            else if (rank === 3) medal = '🥉 ';
-            
-            html += `
-                <tr data-player-id="${player.id}">
-                    <td class="rank-cell">${medal}${rank}</td>
-                    <td class="name-cell">${escapeHtml(player.name)}</td>
-                    <td class="elo-cell"><span>${player.elo} ⚡</span></td>
-                    <td class="delete-cell">
-                        <button class="delete-player-btn" data-id="${player.id}" data-name="${escapeHtml(player.name)}" ${!isAdminLoggedIn ? 'disabled' : ''} title="${!isAdminLoggedIn ? 'Доступно только админу' : 'Удалить игрока'}">
-                            ✖
-                        </button>
-                    </td>
-                </tr>
-            `;
+            let medal = rank === 1 ? '🥇 ' : rank === 2 ? '🥈 ' : rank === 3 ? '🥉 ' : '';
+            html += `<tr><td class="rank-cell">${medal}${rank}</td><td class="name-cell">${escapeHtml(p.name)}</td><td class="elo-cell"><span>${p.elo} ⚡</span></td><td class="delete-cell"><button class="delete-player-btn" data-id="${p.id}" data-name="${escapeHtml(p.name)}" ${!isAdminLoggedIn ? 'disabled' : ''}>✖</button></td></tr>`;
         }
-        topTableBody.innerHTML = html;
-        
-        // навешиваем обработчики на кнопки удаления
+        tbody.innerHTML = html;
         document.querySelectorAll('.delete-player-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = btn.getAttribute('data-id');
-                const name = btn.getAttribute('data-name');
-                if (id && isAdminLoggedIn) {
-                    deletePlayerById(Number(id), name);
-                } else if (!isAdminLoggedIn) {
-                    showToast("Удаление доступно только после входа в админ-панель!", "warning");
-                }
+            btn.addEventListener('click', () => {
+                if (isAdminLoggedIn) deletePlayer(Number(btn.dataset.id), btn.dataset.name);
+                else showToast("Удаление доступно только после входа в админ-панель!", "warning");
             });
         });
     }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-    
-    // ==================== АДМИН-ЛОГИН / ВЫХОД ====================
-    function showAdminLoginForm() {
-        authContentDiv.style.display = 'block';
-        adminContentDiv.style.display = 'none';
-        if (passwordInput) passwordInput.value = '';
-    }
-    
-    function showAdminControls() {
-        authContentDiv.style.display = 'none';
-        adminContentDiv.style.display = 'block';
-    }
-    
+
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+
     function loginAdmin() {
-        const enteredPassword = passwordInput.value;
-        if (enteredPassword === ADMIN_PASSWORD) {
+        if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
             isAdminLoggedIn = true;
-            showAdminControls();
-            renderTopTable();
+            document.getElementById('authContent').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            renderTable();
             showToast("Добро пожаловать! Админ-панель разблокирована", "success");
-        } else {
-            showToast("Неверный пароль! Доступ запрещён.", "error");
-            passwordInput.value = '';
-            passwordInput.focus();
-        }
+        } else { showToast("Неверный пароль!", "error"); }
     }
-    
+
     function logoutAdmin() {
-        customConfirm("Выйти из админ-панели? Редактирование станет недоступным.", () => {
+        customConfirm("Выйти из админ-панели?", () => {
             isAdminLoggedIn = false;
-            showAdminLoginForm();
-            renderTopTable();
-            if (playerNameInput) playerNameInput.value = '';
-            if (playerEloInput) playerEloInput.value = '1200';
+            document.getElementById('authContent').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+            renderTable();
             showToast("Вы вышли из админ-панели", "info");
         });
     }
-    
-    // ==================== МОДАЛЬНОЕ ОКНО ====================
+
     function openModal() {
-        adminModal.classList.add('active');
-        if (!isAdminLoggedIn) {
-            showAdminLoginForm();
-        } else {
-            showAdminControls();
-        }
+        document.getElementById('adminModal').classList.add('active');
+        if (!isAdminLoggedIn) { document.getElementById('authContent').style.display = 'block'; document.getElementById('adminContent').style.display = 'none'; }
+        else { document.getElementById('authContent').style.display = 'none'; document.getElementById('adminContent').style.display = 'block'; }
     }
-    
-    function closeModal() {
-        adminModal.classList.remove('active');
+
+    function closeModal() { document.getElementById('adminModal').classList.remove('active'); }
+
+    function handleAdd() {
+        if (!isAdminLoggedIn) { showToast("Сначала войдите в админ-панель!", "warning"); return; }
+        const name = document.getElementById('playerName').value;
+        const elo = document.getElementById('playerElo').value;
+        if (addOrUpdatePlayer(name, elo)) { document.getElementById('playerName').value = ''; document.getElementById('playerElo').value = '1000'; }
     }
-    
-    function handleAddFromModal() {
-        if (!isAdminLoggedIn) {
-            showToast("Сначала войдите в админ-панель!", "warning");
-            return;
-        }
-        const name = playerNameInput.value;
-        const eloVal = playerEloInput.value;
-        if (addOrUpdatePlayer(name, eloVal)) {
-            playerNameInput.value = '';
-            playerEloInput.value = '1200';
-            playerNameInput.focus();
-        }
-    }
-    
-    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-    function init() {
-        topTableBody = document.getElementById('topTableBody');
-        adminModal = document.getElementById('adminModal');
-        openAdminBtn = document.getElementById('openAdminBtn');
-        closeModalBtn = document.getElementById('closeModalBtn');
-        
-        authContentDiv = document.getElementById('authContent');
-        adminContentDiv = document.getElementById('adminContent');
-        loginBtn = document.getElementById('loginAdminBtn');
-        passwordInput = document.getElementById('adminPassword');
-        
-        addBtn = document.getElementById('addPlayerModalBtn');
-        playerNameInput = document.getElementById('playerName');
-        playerEloInput = document.getElementById('playerElo');
-        demoBtn = document.getElementById('demoPlayersBtn');
-        clearBtn = document.getElementById('clearAllBtn');
-        logoutBtn = document.getElementById('logoutAdminBtn');
-        
-        loadPlayersFromStorage();
-        renderTopTable();
-        
-        isAdminLoggedIn = false;
-        showAdminLoginForm();
-        
-        openAdminBtn.addEventListener('click', openModal);
-        closeModalBtn.addEventListener('click', closeModal);
-        adminModal.addEventListener('click', (e) => {
-            if (e.target === adminModal) closeModal();
-        });
-        
-        loginBtn.addEventListener('click', loginAdmin);
-        logoutBtn.addEventListener('click', logoutAdmin);
-        
-        addBtn.addEventListener('click', handleAddFromModal);
-        demoBtn.addEventListener('click', addDemoPlayers);
-        clearBtn.addEventListener('click', clearAllPlayers);
-        
-        const handleEnter = (e) => {
-            if (e.key === 'Enter' && isAdminLoggedIn && adminModal.classList.contains('active')) {
-                e.preventDefault();
-                handleAddFromModal();
-            }
-        };
-        if (playerNameInput) playerNameInput.addEventListener('keypress', handleEnter);
-        if (playerEloInput) playerEloInput.addEventListener('keypress', handleEnter);
-        
-        if (passwordInput) {
-            passwordInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') loginAdmin();
-            });
-        }
-        
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'elo_top_players_data') {
-                loadPlayersFromStorage();
-                renderTopTable();
-            }
-        });
-    }
-    
-    init();
+
+    document.getElementById('openAdminBtn').onclick = openModal;
+    document.getElementById('closeModalBtn').onclick = closeModal;
+    document.getElementById('loginAdminBtn').onclick = loginAdmin;
+    document.getElementById('logoutAdminBtn').onclick = logoutAdmin;
+    document.getElementById('addPlayerModalBtn').onclick = handleAdd;
+    document.getElementById('demoPlayersBtn').onclick = addDemo;
+    document.getElementById('clearAllBtn').onclick = clearAll;
+    document.getElementById('adminModal').onclick = (e) => { if (e.target === document.getElementById('adminModal')) closeModal(); };
+    document.getElementById('adminPassword').onkeypress = (e) => { if (e.key === 'Enter') loginAdmin(); };
+    document.getElementById('playerName').onkeypress = (e) => { if (e.key === 'Enter' && isAdminLoggedIn) handleAdd(); };
+    document.getElementById('playerElo').onkeypress = (e) => { if (e.key === 'Enter' && isAdminLoggedIn) handleAdd(); };
+
+    loadPlayers();
+    renderTable();
 </script>
 </body>
 </html>
