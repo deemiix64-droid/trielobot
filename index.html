@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Топ-10 игроков по ЭЛО</title>
+    <title>Топ-10 игроков по кубкам</title>
     <style>
         * {
             margin: 0;
@@ -415,7 +415,7 @@
 <div class="container">
     <div class="header">
         <div class="title">
-            <h1>🏆 ЭЛО АРЕНА</h1>
+            <h1>🏆 БРАВЛ ТОП</h1>
             <p>Топ-10 лучших игроков</p>
         </div>
         <button class="admin-open-btn" id="openAdminBtn">🔐 Админ-панель</button>
@@ -425,14 +425,14 @@
         <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr><th># МЕСТО</th><th>НИКНЕЙМ</th><th>ЭЛО РЕЙТИНГ</th><th></th></tr>
+                    <tr><th>МЕСТО</th><th>НИКНЕЙМ</th><th>КУБКИ</th><th></th></tr>
                 </thead>
                 <tbody id="topTableBody">
                     <tr class="empty-row"><td colspan="4">🏁 Топ пуст. Откройте админ-панель и добавьте игроков</td></tr>
                 </tbody>
             </table>
         </div>
-        <div class="footer-info">📊 Топ-10 по убыванию ЭЛО</div>
+        <div class="footer-info">📊 Топ-10 по убыванию кубков</div>
     </div>
 </div>
 
@@ -457,7 +457,7 @@
                     <input type="text" id="playerName" placeholder="Введите ник" autocomplete="off">
                 </div>
                 <div class="input-group">
-                    <label>⚡ Рейтинг ЭЛО (без ограничений)</label>
+                    <label>⚡ Рейтинг кубков (без ограничений)</label>
                     <input type="number" id="playerElo" placeholder="Любое число" value="1000">
                 </div>
                 <button class="modal-btn" id="addPlayerModalBtn">➕ Добавить / Обновить игрока</button>
@@ -466,8 +466,8 @@
                     <button class="modal-btn modal-btn-danger" id="clearAllBtn">🗑️ Очистить топ</button>
                 </div>
                 <div class="admin-note">
-                    • При совпадении ника — обновляется ЭЛО<br>
-                    • Нет ограничений на значение ЭЛО<br>
+                    • При совпадении ника — обновляется кубки<br>
+                    • Нет ограничений на значение кубки<br>
                     • Все данные сохраняются в браузере
                 </div>
                 <button class="modal-btn modal-btn-secondary" id="logoutAdminBtn" style="margin-top: 15px; background: #374151;">🚪 Выйти из админ-панели</button>
@@ -522,15 +522,15 @@
         const trimmedName = name.trim();
         if (!trimmedName) { showToast("Введите никнейм игрока!", "warning"); return false; }
         let eloNum = Number(eloValue);
-        if (isNaN(eloNum)) { showToast("ЭЛО должно быть числом!", "warning"); return false; }
+        if (isNaN(eloNum)) { showToast("Кубки должно быть числом!", "warning"); return false; }
         const existingIndex = players.findIndex(p => p.name.toLowerCase() === trimmedName.toLowerCase());
         if (existingIndex !== -1) {
             players[existingIndex].elo = eloNum;
             players[existingIndex].name = trimmedName;
-            showToast(`Игрок "${trimmedName}" обновлён! ЭЛО: ${eloNum}`, "success");
+            showToast(`Игрок "${trimmedName}" обновлён! Кубки: ${eloNum}`, "success");
         } else {
             players.push({ id: generateId(), name: trimmedName, elo: eloNum });
-            showToast(`Игрок "${trimmedName}" добавлен с ЭЛО: ${eloNum}`, "success");
+            showToast(`Игрок "${trimmedName}" добавлен с кубками: ${eloNum}`, "success");
         }
         players.sort((a, b) => { if (a.elo !== b.elo) return b.elo - a.elo; return a.id - b.id; });
         savePlayers();
